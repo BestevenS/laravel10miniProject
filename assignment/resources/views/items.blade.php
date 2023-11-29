@@ -6,6 +6,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
         .resizable {
@@ -42,11 +43,50 @@
         @endforeach
     </div>
 
+    <!-- Κουμπί για την αποθήκευση των αλλαγών -->
+    <button onclick="saveChanges()">Αποθήκευση Αλλαγών</button>
+
     <script>
         $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
             $(".resizable").resizable();
             $("#sortable").sortable();
         });
+
+        // Η συνάρτηση saveChanges που καλείται όταν πατηθεί το κουμπί
+        function saveChanges() {
+            var itemsData = [];
+
+            $('#sortable .resizable').each(function() {
+                var item = {
+                    id: this.id,
+                    name: $(this).text(),
+                    width: $(this).width(),
+                    height: $(this).height(),
+                    position: $(this).index()
+                };
+                itemsData.push(item);
+            });
+
+            $.ajax({
+                url: '/items/store',
+                type: 'POST',
+                data: {
+                    items: itemsData
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.error(error);
+                }
+            });
+        }
     </script>
 
 </body>

@@ -10,12 +10,20 @@ class ItemsController extends Controller
 
     public function index()
     {
-        $items = [
-            ['id' => 'item1', 'name' => 'Αντικείμενο 1'],
-            ['id' => 'item2', 'name' => 'Αντικείμενο 2'],
-            ['id' => 'item3', 'name' => 'Αντικείμενο 3'],
-            ['id' => 'item4', 'name' => 'Αντικείμενο 4'],
-        ];
+        $filePath = storage_path('app/items_data.json');
+
+        if (file_exists($filePath)) {
+            $jsonData = file_get_contents($filePath);
+            $data = json_decode($jsonData, true);
+            $items = $data['items'] ?? [];
+        } else {
+            $items = [
+                ['id' => 'item1', 'name' => 'Item 1'],
+                ['id' => 'item2', 'name' => 'Item 2'],
+                ['id' => 'item3', 'name' => 'Item 3'],
+                ['id' => 'item4', 'name' => 'Item 4'],
+            ];
+        }
 
         return view('items', compact('items'));
     }
