@@ -23,3 +23,7 @@ Route::get('/chart', function () {
 });
 
 Route::get('/chart-data', [ChartController::class, 'index']);
+
+Route::get('/items', function () {
+    return view('items');
+});
