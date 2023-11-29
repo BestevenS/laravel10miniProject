@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChartController;
+use App\Http\Controllers\ItemsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,3 +28,7 @@ Route::get('/chart-data', [ChartController::class, 'index']);
 Route::get('/items', function () {
     return view('items');
 });
+
+Route::get('/items', [ItemsController::class, 'index']);
+
+Route::post('/items/store', [ItemsController::class, 'store']);

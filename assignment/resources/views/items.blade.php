@@ -37,11 +37,11 @@
 
 <body>
     <div id="sortable">
-        <div id="item1" class="resizable">Αντικείμενο 1</div>
-        <div id="item2" class="resizable">Αντικείμενο 2</div>
-        <div id="item3" class="resizable">Αντικείμενο 3</div>
-        <div id="item4" class="resizable">Αντικείμενο 4</div>
+        @foreach ($items as $item)
+            <div id="{{ $item['id'] }}" class="resizable">{{ $item['name'] }}</div>
+        @endforeach
     </div>
+
     <script>
         $(document).ready(function() {
             $(".resizable").resizable();
