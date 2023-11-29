@@ -13,16 +13,16 @@
             text-decoration: none;
             outline: none;
             color: #fff;
-            background-color: #4CAF50;
+            background-color: #614caf;
             border: none;
             border-radius: 15px;
             box-shadow: 0 9px #999;
         }
 
-        .button:hover {background-color: #3e8e41}
+        .button:hover {background-color: #614caf}
 
         .button:active {
-            background-color: #3e8e41;
+            background-color: #614caf;
             box-shadow: 0 5px #666;
             transform: translateY(4px);
         }
