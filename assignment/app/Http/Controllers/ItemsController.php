@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -10,35 +11,60 @@ class ItemsController extends Controller
 
     public function index()
     {
-        $filePath = storage_path('app/items_data.json');
-
-        if (file_exists($filePath)) {
-            $jsonData = file_get_contents($filePath);
-            $data = json_decode($jsonData, true);
-            $items = $data['items'] ?? [];
-        } else {
-            $items = [
-                ['id' => 'item1', 'name' => 'Item 1'],
-                ['id' => 'item2', 'name' => 'Item 2'],
-                ['id' => 'item3', 'name' => 'Item 3'],
-                ['id' => 'item4', 'name' => 'Item 4'],
-            ];
-        }
-
+        $items = Item::all();
         return view('items', compact('items'));
     }
 
     public function store(Request $request)
     {
-        // Παίρνουμε τα δεδομένα από το αίτημα
-        $data = $request->all();
+        $itemsData = $request->input('items', []);
 
-        // Μετατροπή των δεδομένων σε JSON
-        $jsonData = json_encode($data);
+        foreach ($itemsData as $itemData) {
+            $validatedData = validator($itemData, [
+                'name' => 'required|max:255',
+                'width' => 'required|integer',
+                'height' => 'required|integer',
+                'position' => 'required|integer',
+            ])->validate();
 
-        // Αποθήκευση των δεδομένων σε ένα αρχείο
-        Storage::disk('local')->put('items_data.json', $jsonData);
+            Item::updateOrCreate(
+                ['id' => $itemData['id']],
+                $validatedData
+            );
+        }
 
         return response()->json(['success' => true]);
+    }
+
+
+
+    public function create()
+    {
+        return view('items.create');
+    }
+
+    public function edit(Item $item)
+    {
+        return view('items.edit', compact('item'));
+    }
+
+    public function update(Request $request, Item $item)
+    {
+        $data = $request->validate([
+            'name' => 'required|max:255',
+            'width' => 'required|integer',
+            'height' => 'required|integer',
+            'position' => 'required|integer',
+        ]);
+
+        $item->update($data);
+
+        return redirect()->route('items');
+    }
+
+    public function destroy(Item $item)
+    {
+        $item->delete();
+        return redirect()->route('items');
     }
 }

@@ -29,6 +29,6 @@ Route::get('/items', function () {
     return view('items');
 });
 
-Route::get('/items', [ItemsController::class, 'index']);
+Route::resource('items', ItemsController::class);
 
 Route::post('/items/store', [ItemsController::class, 'store']);

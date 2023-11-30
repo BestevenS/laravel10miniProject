@@ -10,8 +10,6 @@
 
     <style>
         .resizable {
-            width: 200px;
-            height: 100px;
             padding: 0.5em;
             margin: 10px;
             border: 1px solid #ccc;
@@ -38,8 +36,9 @@
 
 <body>
     <div id="sortable">
-        @foreach ($items as $item)
-            <div id="{{ $item['id'] }}" class="resizable">{{ $item['name'] }}</div>
+        @foreach ($items->sortBy('position') as $item)
+            <div id="item-{{ $item->id }}" class="resizable"
+                style="width: {{ $item->width }}px; height: {{ $item->height }}px;">{{ $item->name }}</div>
         @endforeach
     </div>
 
@@ -64,8 +63,8 @@
 
             $('#sortable .resizable').each(function() {
                 var item = {
-                    id: this.id,
-                    name: $(this).text(),
+                    id: $(this).attr('id').split('-')[1], // Αναμένεται ότι το id θα έχει μορφή 'item-{id}'
+                    name: $(this).text().trim(), // Χρησιμοποιήστε την .trim() για να αφαιρέσετε περιττά κενά
                     width: $(this).width(),
                     height: $(this).height(),
                     position: $(this).index()
@@ -77,6 +76,7 @@
                 url: '/items/store',
                 type: 'POST',
                 data: {
+                    _token: "{{ csrf_token() }}", // Προσθήκη του CSRF token
                     items: itemsData
                 },
                 success: function(response) {
