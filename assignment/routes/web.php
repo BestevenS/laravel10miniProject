@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Auth; // Add this line
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\ItemsController;
@@ -15,20 +17,18 @@ use App\Http\Controllers\ItemsController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Auth::routes();
 
 Route::get('/chart', function () {
     return view('chart');
-});
+})->middleware('auth');
 
-Route::get('/chart-data', [ChartController::class, 'index']);
+Route::get('/chart-data', [ChartController::class, 'index'])->middleware('auth');
 
 Route::get('/items', function () {
     return view('items');
-});
+})->middleware('auth');
 
-Route::resource('items', ItemsController::class);
+Route::resource('items', ItemsController::class)->middleware('auth');
 
-Route::post('/items/store', [ItemsController::class, 'store']);
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
