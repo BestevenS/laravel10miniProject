@@ -42,7 +42,6 @@
         @endforeach
     </div>
 
-    <!-- Κουμπί για την αποθήκευση των αλλαγών -->
     <button onclick="saveChanges()">Αποθήκευση Αλλαγών</button>
 
     <script>
@@ -57,14 +56,13 @@
             $("#sortable").sortable();
         });
 
-        // Η συνάρτηση saveChanges που καλείται όταν πατηθεί το κουμπί
         function saveChanges() {
             var itemsData = [];
 
             $('#sortable .resizable').each(function() {
                 var item = {
-                    id: $(this).attr('id').split('-')[1], // Αναμένεται ότι το id θα έχει μορφή 'item-{id}'
-                    name: $(this).text().trim(), // Χρησιμοποιήστε την .trim() για να αφαιρέσετε περιττά κενά
+                    id: $(this).attr('id').split('-')[1],
+                    name: $(this).text().trim(),
                     width: $(this).width(),
                     height: $(this).height(),
                     position: $(this).index()
@@ -76,7 +74,7 @@
                 url: '/items/store',
                 type: 'POST',
                 data: {
-                    _token: "{{ csrf_token() }}", // Προσθήκη του CSRF token
+                    _token: "{{ csrf_token() }}",
                     items: itemsData
                 },
                 success: function(response) {
